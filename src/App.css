@@ -1,146 +1,258 @@
+/* =========================================================
+   LAVALUST — BLACK / NEON GREEN / NEON PINK
+   Clean • Modern • Futuristic
+   ========================================================= */
+
+:root {
+  --black: #050505;
+  --black-soft: #0b0b0b;
+  --panel: #101010;
+  --panel-hover: #151515;
+
+  --green: #b7ff00;
+  --green-soft: rgba(183, 255, 0, 0.12);
+
+  --pink: #ff2bd6;
+  --pink-soft: rgba(255, 43, 214, 0.12);
+
+  --white: #f5f5f5;
+  --gray: #999;
+  --gray-dark: #5d5d5d;
+
+  --line: #242424;
+
+  --display: Inter, Arial, sans-serif;
+  --mono: "Courier New", monospace;
+
+  --ink: var(--white);
+  --muted: var(--gray);
+  --hot: var(--pink);
+  --citron: var(--green);
+  --paper: var(--black);
+}
+
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background: var(--black);
+  color: var(--white);
+  font-family: Inter, Arial, sans-serif;
+}
+
+button,
+input,
+textarea {
+  font-family: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+::selection {
+  background: var(--green);
+  color: #000;
+}
+
+
+/* =========================================================
+   APP
+   ========================================================= */
+
 .app {
   min-height: 100vh;
-  background-color: var(--paper);
-  background-image: radial-gradient(#e4ddec 0.55px, transparent 0.55px);
-  background-size: 8px 8px;
+  background:
+    radial-gradient(
+      circle at 85% 5%,
+      rgba(183, 255, 0, 0.055),
+      transparent 25%
+    ),
+    radial-gradient(
+      circle at 10% 80%,
+      rgba(255, 43, 214, 0.04),
+      transparent 25%
+    ),
+    var(--black);
+  color: var(--white);
 }
+
+
+/* =========================================================
+   LOGIN PAGE
+   ========================================================= */
 
 .login-page {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr;
   place-items: center;
   min-height: 100svh;
   overflow: hidden;
   isolation: isolate;
   padding: 24px;
-  background: #261143;
+  background: #050505;
 }
 
 .login-page::before {
-  display: none;
+  position: absolute;
+  z-index: -2;
+  width: 520px;
+  height: 520px;
+  border-radius: 50%;
+  background: rgba(183, 255, 0, 0.08);
+  filter: blur(120px);
+  content: "";
+  pointer-events: none;
 }
 
 .login-page::after {
   position: absolute;
   z-index: -1;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background-image: radial-gradient(rgba(255, 255, 255, 0.18) 0.6px, transparent 0.6px);
-  background-size: 18px 18px;
-  opacity: 0.38;
+  inset: 0;
+  background-image:
+    linear-gradient(
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.025) 1px,
+      transparent 1px
+    );
+  background-size: 45px 45px;
+  opacity: 0.45;
   content: "";
   pointer-events: none;
 }
 
+
+/* =========================================================
+   LOGIN CARD
+   ========================================================= */
+
 .login-card {
   position: relative;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: min(100%, 460px);
-  min-height: auto;
-  margin: 0;
-  padding: clamp(32px, 5vw, 48px);
-  border: 1px solid rgba(255, 255, 255, 0.78);
-  border-top: 5px solid #392064;
-  border-radius: 4px;
-  background: #fff;
-  box-shadow: 0 24px 80px rgba(13, 4, 28, 0.3);
+  width: min(100%, 450px);
+  padding: 42px;
+  border: 1px solid #292929;
+  border-radius: 18px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.045),
+      rgba(255, 255, 255, 0.015)
+    ),
+    #0a0a0a;
+  box-shadow:
+    0 30px 100px rgba(0, 0, 0, 0.65),
+    0 0 0 1px rgba(183, 255, 0, 0.025);
   animation: reveal-up 550ms ease-out both;
 }
 
 .login-card::before {
-  margin-bottom: 32px;
-  padding-bottom: 14px;
-  border-bottom: 1px solid #eeeaf4;
-  color: #66577e;
-  content: "LL   /   LAVALUST STOCKROOM";
-  font: 500 11px/1 var(--mono);
-  letter-spacing: 0;
+  display: block;
+  margin-bottom: 35px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid var(--line);
+  color: var(--gray-dark);
+  content: "LL   /   LAVALUST SYSTEM";
+  font: 10px/1 var(--mono);
+  letter-spacing: 2px;
 }
 
 .login-card h1 {
   margin: 0;
-  color: #261143;
+  color: var(--white);
   font-family: var(--display);
-  font-size: clamp(44px, 5vw, 58px);
-  font-weight: 600;
-  line-height: 0.98;
-  letter-spacing: 0;
-  text-align: left;
+  font-size: clamp(48px, 7vw, 68px);
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -4px;
 }
 
 .login-card h1::after {
-  color: #7955b7;
+  color: var(--green);
   content: ".";
 }
 
 .subtitle {
-  margin: 16px 0 34px;
-  color: #746d82;
-  font-size: 15px;
+  margin: 16px 0 35px;
+  color: #777;
+  font-size: 13px;
+  letter-spacing: 0.3px;
 }
 
-.login-card label {
-  margin-top: 20px;
-}
 
-.login-card label {
-  color: #403650;
-}
-
-.login-card input {
-  border-color: #ded8e8;
-  background: #fff;
-}
-
-.login-card input:focus {
-  border-color: #7955b7;
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(121, 85, 183, 0.14);
-}
+/* =========================================================
+   FORM ELEMENTS
+   ========================================================= */
 
 label {
   display: block;
-  margin-bottom: 8px;
-  color: #4b4a45;
-  font-size: 12px;
+  margin: 20px 0 8px;
+  color: #b8b8b8;
+  font-size: 11px;
   font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 input,
 textarea {
   width: 100%;
   min-width: 0;
-  padding: 13px 14px;
-  border: 1px solid #ded8e8;
-  border-radius: 2px;
+  padding: 14px 15px;
+  border: 1px solid #292929;
+  border-radius: 9px;
   outline: none;
-  background: rgba(255, 255, 255, 0.55);
-  color: var(--ink);
-  font-size: 14px;
-  transition: border-color 160ms ease, box-shadow 160ms ease, background 160ms ease;
+  background: #0d0d0d;
+  color: var(--white);
+  font-size: 13px;
+  transition:
+    border-color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease;
 }
 
 input::placeholder,
 textarea::placeholder {
-  color: #9991a5;
+  color: #4f4f4f;
+}
+
+input:hover,
+textarea:hover {
+  border-color: #3a3a3a;
 }
 
 input:focus,
 textarea:focus {
-  border-color: var(--hot);
-  background: #fff;
-  box-shadow: 0 0 0 3px rgba(105, 70, 155, 0.12);
+  border-color: var(--green);
+  background: #101010;
+  box-shadow:
+    0 0 0 3px rgba(183, 255, 0, 0.08),
+    0 0 25px rgba(183, 255, 0, 0.04);
 }
 
 textarea {
   min-height: 100px;
   resize: vertical;
 }
+
+
+/* =========================================================
+   BUTTON BASE
+   ========================================================= */
 
 .primary-button,
 .secondary-button,
@@ -151,120 +263,168 @@ textarea {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 14px;
-  min-height: 42px;
+  gap: 10px;
+  min-height: 40px;
   padding: 10px 14px;
   border: 1px solid transparent;
-  border-radius: 2px;
-  cursor: pointer;
-  font-size: 12px;
-  font-weight: 600;
-  transition: background 160ms ease, color 160ms ease, border-color 160ms ease, transform 160ms ease;
+  border-radius: 8px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  transition:
+    transform 160ms ease,
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    box-shadow 160ms ease;
 }
 
+
+/* =========================================================
+   PRIMARY BUTTON — NEON GREEN
+   ========================================================= */
+
 .primary-button {
-  background: var(--hot);
-  color: #fff;
+  background: var(--green);
+  color: #050505;
 }
 
 .primary-button:hover {
-  background: #543780;
-  transform: translateY(-1px);
+  background: #c8ff3b;
+  transform: translateY(-2px);
+  box-shadow:
+    0 8px 30px rgba(183, 255, 0, 0.16);
 }
 
 .primary-button:disabled {
   cursor: wait;
-  opacity: 0.7;
+  opacity: 0.5;
   transform: none;
+  box-shadow: none;
 }
+
+
+/* =========================================================
+   LOGIN BUTTON
+   ========================================================= */
 
 .login-card .primary-button {
   width: 100%;
-  min-height: 52px;
-  margin-top: 26px;
+  min-height: 53px;
+  margin-top: 28px;
   justify-content: space-between;
-  padding-inline: 18px;
-  background: #392064;
-  color: #fff;
+  padding: 0 18px;
+  border-radius: 9px;
+  background: var(--green);
+  color: #050505;
+  font-size: 12px;
 }
 
 .login-card .primary-button:hover {
-  background: #4a2a79;
+  background: #c8ff3b;
 }
+
+
+/* =========================================================
+   ERROR
+   ========================================================= */
 
 .error {
   margin: 15px 0;
   padding: 12px 14px;
-  border-left: 3px solid var(--hot);
-  background: #f0eaf7;
-  color: #563b78;
-  font-size: 13px;
+  border: 1px solid rgba(255, 43, 214, 0.35);
+  border-left: 3px solid var(--pink);
+  border-radius: 7px;
+  background: var(--pink-soft);
+  color: #ff8ee9;
+  font-size: 12px;
 }
 
-.app {
-  color: var(--ink);
-}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
 
 .header {
+  position: sticky;
+  top: 0;
+  z-index: 20;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  min-height: 76px;
-  padding: 0 max(32px, calc((100vw - 1440px) / 2));
-  background: #24113f;
-  color: #fff;
+  min-height: 72px;
+  padding: 0 max(28px, calc((100vw - 1440px) / 2));
+  border-bottom: 1px solid var(--line);
+  background: rgba(5, 5, 5, 0.92);
+  backdrop-filter: blur(16px);
+  color: var(--white);
 }
 
 .header > div:first-child {
   display: flex;
   align-items: center;
-  gap: 13px;
+  gap: 14px;
 }
 
 .header h1 {
   margin: 0;
-  color: #fff;
+  color: var(--white);
   font-family: var(--display);
   font-size: 19px;
-  font-weight: 600;
-  letter-spacing: 0;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+}
+
+.header h1::after {
+  color: var(--green);
+  content: ".";
 }
 
 .header p {
   padding-left: 14px;
-  border-left: 1px solid #5c4c70;
-  color: #c4b8d2;
-  font: 10px/1.4 var(--mono);
-  letter-spacing: 0;
+  border-left: 1px solid #303030;
+  color: #686868;
+  font: 9px/1.4 var(--mono);
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 .header-right {
   display: flex;
   align-items: center;
-  gap: 22px;
-  color: #e5dfee;
-  font-size: 12px;
+  gap: 16px;
+  color: #8c8c8c;
+  font-size: 11px;
 }
 
 .logout-button {
   min-height: 34px;
-  border-color: #5c4c70;
+  border-color: #303030;
   background: transparent;
-  color: #fff;
+  color: #bdbdbd;
 }
 
 .logout-button:hover {
-  border-color: var(--citron);
-  background: #392064;
-  color: #fff;
+  border-color: var(--pink);
+  background: var(--pink-soft);
+  color: var(--pink);
 }
 
+
+/* =========================================================
+   MAIN CONTAINER
+   ========================================================= */
+
 .container {
-  width: min(1440px, calc(100% - 96px));
+  width: min(1440px, calc(100% - 80px));
   margin: 0 auto;
   padding: 55px 0 80px;
 }
+
+
+/* =========================================================
+   PAGE TITLE
+   ========================================================= */
 
 .page-title {
   display: flex;
@@ -275,24 +435,25 @@ textarea {
 
 .page-title h2 {
   margin: 0;
+  color: var(--white);
   font-family: var(--display);
-  font-size: clamp(42px, 5vw, 66px);
-  font-weight: 500;
-  line-height: 1;
-  letter-spacing: 0;
+  font-size: clamp(44px, 5vw, 70px);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -4px;
 }
 
 .page-title p {
-  margin-top: 10px;
-  color: var(--muted);
-  font-size: 14px;
+  margin-top: 12px;
+  color: #686868;
+  font-size: 13px;
 }
 
 .eyebrow,
 .section-number {
-  color: #777086;
-  font: 10px/1.4 var(--mono);
-  letter-spacing: 0;
+  color: #666;
+  font: 9px/1.4 var(--mono);
+  letter-spacing: 1.5px;
   text-transform: uppercase;
 }
 
@@ -302,38 +463,54 @@ textarea {
 
 .eyebrow span {
   padding-inline: 5px;
-  color: var(--hot);
+  color: var(--pink);
 }
 
 .brand-period {
-  color: var(--hot);
+  color: var(--green);
 }
+
+
+/* =========================================================
+   INVENTORY STAMP
+   ========================================================= */
 
 .inventory-stamp {
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 9px 12px;
-  border: 1px solid var(--line);
-  color: var(--ink);
-  transform: rotate(-4deg);
+  padding: 10px 13px;
+  border: 1px solid #303030;
+  border-radius: 8px;
+  background: #0c0c0c;
+  color: var(--white);
+  transform: rotate(-3deg);
 }
 
 .inventory-stamp > span {
-  color: var(--hot);
-  font: 600 25px/1 var(--display);
+  color: var(--green);
+  font: 800 25px/1 var(--display);
 }
 
 .inventory-stamp small {
-  font: 9px/1.35 var(--mono);
+  color: #777;
+  font: 8px/1.4 var(--mono);
+  letter-spacing: 1px;
 }
+
+
+/* =========================================================
+   STATISTICS
+   ========================================================= */
 
 .stats-row {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr)) 190px;
-  margin-bottom: 26px;
-  border-block: 1px solid #dfd8e9;
-  background: rgba(245, 242, 249, 0.9);
+  margin-bottom: 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+  background: #0b0b0b;
 }
 
 .stat-block {
@@ -342,38 +519,49 @@ textarea {
   flex-direction: column;
   align-items: flex-start;
   justify-content: center;
-  padding: 16px 22px;
-  border-right: 1px solid #dfd8e9;
+  padding: 18px 22px;
+  border-right: 1px solid var(--line);
 }
 
 .stat-highlight {
-  background: var(--citron);
+  background:
+    linear-gradient(
+      135deg,
+      rgba(183, 255, 0, 0.14),
+      rgba(183, 255, 0, 0.035)
+    );
 }
 
 .stat-label,
 .stat-aside small {
-  color: #777086;
+  color: #686868;
   font: 9px/1.4 var(--mono);
-  letter-spacing: 0;
+  letter-spacing: 1.2px;
+}
+
+.stat-highlight .stat-label {
+  color: rgba(183, 255, 0, 0.7);
 }
 
 .stat-block strong {
-  margin: 3px 0 0;
-  color: var(--ink);
-  font: 500 29px/1.1 var(--display);
+  margin: 5px 0 0;
+  color: var(--white);
+  font: 800 30px/1.1 var(--display);
+  letter-spacing: -1px;
 }
 
 .stat-foot {
-  margin-top: 3px;
-  color: #777086;
+  margin-top: 4px;
+  color: #5f5f5f;
   font-size: 10px;
 }
 
 .stat-aside {
   align-self: center;
   padding: 12px 18px;
-  color: #594a6f;
-  font: 10px/1.8 var(--mono);
+  color: #777;
+  font: 9px/1.8 var(--mono);
+  letter-spacing: 1px;
 }
 
 .stat-aside small {
@@ -386,31 +574,42 @@ textarea {
   height: 7px;
   margin-right: 6px;
   border-radius: 50%;
-  background: #7652a7;
-  box-shadow: 0 0 0 3px rgba(118, 82, 167, 0.14);
+  background: var(--green);
+  box-shadow:
+    0 0 0 3px rgba(183, 255, 0, 0.1),
+    0 0 14px rgba(183, 255, 0, 0.55);
 }
+
+
+/* =========================================================
+   WORKSPACE
+   ========================================================= */
 
 .workspace-grid {
   display: grid;
   grid-template-columns: minmax(285px, 0.72fr) minmax(0, 1.55fr);
   align-items: start;
-  gap: 20px;
+  gap: 18px;
 }
 
 .form-card,
 .products-card {
   min-width: 0;
-  padding: 26px;
   border: 1px solid var(--line);
-  border-radius: 3px;
-  background: rgba(255, 255, 255, 0.94);
-  box-shadow: 0 10px 30px rgba(47, 27, 73, 0.045);
+  border-radius: 12px;
+  background: #0b0b0b;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.22);
 }
 
 .form-card {
   margin-bottom: 0;
   padding: 23px 20px;
 }
+
+
+/* =========================================================
+   SECTION HEADINGS
+   ========================================================= */
 
 .section-heading {
   padding-bottom: 18px;
@@ -421,35 +620,41 @@ textarea {
 .products-title .section-number {
   display: block;
   margin-bottom: 8px;
-  color: var(--hot);
+  color: var(--green);
 }
 
 .section-heading p {
-  margin-top: 5px;
-  color: var(--muted);
-  font-size: 12px;
-}
-
-.optional,
-.currency-label {
-  float: right;
-  color: #91899c;
-  font: 9px/1.6 var(--mono);
-}
-
-.currency-label {
-  color: #777086;
+  margin-top: 6px;
+  color: #626262;
+  font-size: 11px;
 }
 
 .form-card h2,
 .products-card h2 {
   margin: 0;
-  color: var(--ink);
+  color: var(--white);
   font-family: var(--display);
   font-size: 22px;
-  font-weight: 500;
-  letter-spacing: 0;
+  font-weight: 700;
+  letter-spacing: -0.6px;
 }
+
+.optional,
+.currency-label {
+  float: right;
+  color: #555;
+  font: 8px/1.6 var(--mono);
+  letter-spacing: 0.5px;
+}
+
+.currency-label {
+  color: #777;
+}
+
+
+/* =========================================================
+   FORM
+   ========================================================= */
 
 .form-grid {
   display: grid;
@@ -477,15 +682,21 @@ textarea {
 }
 
 .secondary-button {
-  border-color: var(--line);
+  border-color: #303030;
   background: transparent;
-  color: var(--ink);
+  color: #aaa;
 }
 
-.secondary-button:hover,
-.refresh-button:hover {
-  border-color: var(--ink);
+.secondary-button:hover {
+  border-color: var(--pink);
+  background: var(--pink-soft);
+  color: var(--pink);
 }
+
+
+/* =========================================================
+   PRODUCTS
+   ========================================================= */
 
 .products-card {
   padding: 0;
@@ -502,59 +713,40 @@ textarea {
 
 .products-title p {
   margin-top: 4px;
-  color: var(--muted);
-  font-size: 12px;
+  color: #626262;
+  font-size: 11px;
 }
 
 .products-title > div {
   min-width: 0;
 }
 
-.search-box {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  margin: 0;
-  padding: 10px 16px;
-  border-top: 1px solid var(--line);
-  background: #f7f5fa;
-  color: #777086;
-}
 
-.search-box > span:first-child {
-  color: var(--hot);
-  font-size: 21px;
-  line-height: 1;
-}
-
-.search-box input {
-  padding: 4px 0;
-  border: 0;
-  background: transparent;
-  box-shadow: none;
-  font-size: 12px;
-}
-
-.search-box input:focus {
-  background: transparent;
-  box-shadow: none;
-}
-
-.search-label {
-  color: #91899c;
-  font: 9px/1 var(--mono);
-}
+/* =========================================================
+   REFRESH
+   ========================================================= */
 
 .refresh-button {
   min-height: 34px;
-  border-color: var(--line);
+  border-color: #303030;
   background: transparent;
-  color: var(--ink);
+  color: #999;
+}
+
+.refresh-button:hover {
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
 .refresh-button span {
   font-size: 16px;
 }
+
+
+/* =========================================================
+   TABLE
+   ========================================================= */
 
 .table-wrapper {
   overflow-x: auto;
@@ -571,66 +763,82 @@ table {
 th,
 td {
   padding: 14px 16px;
-  border-bottom: 1px solid #ece8f1;
+  border-bottom: 1px solid #1d1d1d;
   text-align: left;
   vertical-align: middle;
 }
 
 th {
-  background: #f2eef7;
-  color: #70667e;
-  font: 10px/1.3 var(--mono);
-  letter-spacing: 0;
+  background: #0e0e0e;
+  color: #5f5f5f;
+  font: 9px/1.3 var(--mono);
+  letter-spacing: 1px;
   text-transform: uppercase;
 }
 
 td {
-  color: #5a5265;
+  color: #858585;
   font-size: 12px;
 }
 
 .id-cell {
-  color: #92899d;
-  font: 10px/1.4 var(--mono);
+  color: #555;
+  font: 9px/1.4 var(--mono);
   white-space: nowrap;
 }
 
 .product-name-cell {
-  color: var(--ink);
+  color: var(--white);
   font-weight: 600;
 }
+
+tbody tr {
+  transition:
+    background 150ms ease,
+    box-shadow 150ms ease;
+}
+
+tbody tr:hover {
+  background: #111;
+  box-shadow: inset 3px 0 0 var(--green);
+}
+
+
+/* =========================================================
+   QUANTITY
+   ========================================================= */
 
 .quantity-pill {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 4px 7px;
-  background: #eee8f6;
-  color: #553d78;
+  padding: 5px 8px;
+  border: 1px solid rgba(183, 255, 0, 0.2);
+  border-radius: 5px;
+  background: var(--green-soft);
+  color: var(--green);
   white-space: nowrap;
 }
 
 .quantity-pill small {
-  color: #78668f;
-  font-size: 9px;
+  color: rgba(183, 255, 0, 0.55);
+  font-size: 8px;
 }
 
 .quantity-low {
-  background: #f4eaf5;
-  color: #78466f;
+  border-color: rgba(255, 43, 214, 0.25);
+  background: var(--pink-soft);
+  color: var(--pink);
 }
 
 .quantity-low small {
-  color: #78466f;
+  color: rgba(255, 43, 214, 0.6);
 }
 
-tbody tr {
-  transition: background 150ms ease;
-}
 
-tbody tr:hover {
-  background: #faf8fc;
-}
+/* =========================================================
+   ACTION BUTTONS
+   ========================================================= */
 
 .actions {
   display: flex;
@@ -645,24 +853,31 @@ tbody tr:hover {
 }
 
 .edit-button {
-  border-color: #ddd6e8;
-  color: var(--ink);
+  border-color: #303030;
+  color: #aaa;
 }
 
 .edit-button:hover {
-  border-color: var(--ink);
+  border-color: var(--green);
+  background: var(--green-soft);
+  color: var(--green);
 }
 
 .delete-button {
-  border-color: #ddd3e9;
-  color: #67458e;
+  border-color: #303030;
+  color: #888;
 }
 
 .delete-button:hover {
-  border-color: var(--hot);
-  background: var(--hot);
-  color: #fff;
+  border-color: var(--pink);
+  background: var(--pink-soft);
+  color: var(--pink);
 }
+
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
 
 .empty {
   display: grid;
@@ -670,24 +885,33 @@ tbody tr:hover {
   place-content: center;
   gap: 6px;
   border-top: 1px solid var(--line);
-  color: var(--muted);
-  font-size: 13px;
+  color: #555;
+  font-size: 12px;
   text-align: center;
 }
 
 .empty::before {
   margin-bottom: 8px;
-  color: var(--hot);
-  content: "✳";
+  color: var(--green);
+  content: "✦";
   font-size: 27px;
 }
 
 .empty strong {
-  color: var(--ink);
+  color: #ccc;
   font-family: var(--display);
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
 }
+
+.empty span {
+  color: #555;
+}
+
+
+/* =========================================================
+   ANIMATION
+   ========================================================= */
 
 @keyframes reveal-up {
   from {
@@ -700,6 +924,11 @@ tbody tr:hover {
     transform: translateY(0);
   }
 }
+
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
 
 @media (max-width: 900px) {
   .container {
@@ -736,24 +965,24 @@ tbody tr:hover {
   }
 }
 
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
 @media (max-width: 620px) {
   .login-page {
     padding: 18px;
-    background: #261143;
-  }
-
-  .login-page::before {
-    display: none;
   }
 
   .login-card {
     width: min(100%, 440px);
-    min-height: auto;
     padding: 34px 26px;
+    border-radius: 14px;
   }
 
-  .login-card::before {
-    margin-bottom: 36px;
+  .login-card h1 {
+    font-size: 52px;
   }
 
   .header {
@@ -835,10 +1064,6 @@ tbody tr:hover {
     padding: 19px 16px;
   }
 
-  .search-box {
-    padding-inline: 12px;
-  }
-
   .products-card h2 {
     font-size: 20px;
   }
@@ -848,6 +1073,11 @@ tbody tr:hover {
     padding-inline: 12px;
   }
 }
+
+
+/* =========================================================
+   REDUCE MOTION
+   ========================================================= */
 
 @media (prefers-reduced-motion: reduce) {
   *,
