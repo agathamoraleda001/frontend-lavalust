@@ -12,16 +12,23 @@ const cleanResponse = (data) => {
     return data;
   }
 
-  // Remove UTF-8 BOM / invisible characters
   const cleaned = data
     .replace(/^\uFEFF/, "")
     .trim();
 
+  if (!cleaned) {
+    return {};
+  }
+
   try {
     return JSON.parse(cleaned);
-  } catch {
+  } catch (error) {
     console.error("Could not parse API response:", cleaned);
-    throw new Error("Invalid JSON response from server.");
+
+    return {
+      error: cleaned,
+      status: 500,
+    };
   }
 };
 
@@ -59,12 +66,16 @@ function App() {
   const [loading, setLoading] = useState(false);
 
   const totalUnits = products.reduce(
-    (total, product) => total + Number(product.quantity || 0),
+    (total, product) =>
+      total + Number(product.quantity || 0),
     0
   );
+
   const stockValue = products.reduce(
     (total, product) =>
-      total + Number(product.price || 0) * Number(product.quantity || 0),
+      total +
+      Number(product.price || 0) *
+        Number(product.quantity || 0),
     0
   );
 
@@ -110,11 +121,19 @@ function App() {
         }
       );
 
-      console.log("RAW PRODUCT RESPONSE:", response.data);
+      console.log(
+        "RAW PRODUCT RESPONSE:",
+        response.data
+      );
 
-      const result = cleanResponse(response.data);
+      const result = cleanResponse(
+        response.data
+      );
 
-      console.log("CLEAN PRODUCT RESPONSE:", result);
+      console.log(
+        "CLEAN PRODUCT RESPONSE:",
+        result
+      );
 
       if (result?.status === 200) {
         setProducts(result.data || []);
@@ -123,14 +142,22 @@ function App() {
       }
 
     } catch (err) {
-      console.error("LOAD PRODUCTS ERROR:", err);
+      console.error(
+        "LOAD PRODUCTS ERROR:",
+        err
+      );
 
       if (err.response?.status === 401) {
         logout();
       } else {
+        const serverData = cleanResponse(
+          err.response?.data
+        );
+
         setError(
-          err.response?.data?.error ||
-          err.response?.data?.message ||
+          serverData?.error ||
+          serverData?.message ||
+          err.message ||
           "Failed to load products."
         );
       }
@@ -141,7 +168,10 @@ function App() {
   // CHECK EXISTING LOGIN
   // ===================================================
   useEffect(() => {
-    const token = localStorage.getItem("access_token");
+    const token =
+      localStorage.getItem(
+        "access_token"
+      );
 
     if (token) {
       setLoggedIn(true);
@@ -160,13 +190,23 @@ function App() {
     setLoading(true);
 
     try {
-      console.log("Sending login request...");
+      console.log(
+        "Sending login request to:",
+        `${API_URL}/login`
+      );
 
       const response = await axios.post(
         `${API_URL}/login`,
         {
           username: username.trim(),
           password: password,
+        },
+        {
+          headers: {
+            "Content-Type":
+              "application/json",
+            Accept: "application/json",
+          },
         }
       );
 
@@ -175,19 +215,18 @@ function App() {
         response.data
       );
 
-      // ===============================================
-      // CLEAN BOM / JSON
-      // ===============================================
-      const result = cleanResponse(response.data);
+      const result = cleanResponse(
+        response.data
+      );
 
       console.log(
         "CLEAN LOGIN RESPONSE:",
         result
       );
 
-      // ===============================================
+      // =============================================
       // GET ACCESS TOKEN
-      // ===============================================
+      // =============================================
       const accessToken =
         result?.data?.tokens?.access_token;
 
@@ -198,13 +237,15 @@ function App() {
         );
 
         throw new Error(
+          result?.error ||
+          result?.message ||
           "Access token was not returned by the server."
         );
       }
 
-      // ===============================================
+      // =============================================
       // SAVE TOKEN
-      // ===============================================
+      // =============================================
       localStorage.setItem(
         "access_token",
         accessToken
@@ -220,18 +261,18 @@ function App() {
         "LOGIN SUCCESS - TOKEN SAVED"
       );
 
-      // ===============================================
+      // =============================================
       // CHANGE PAGE
-      // ===============================================
+      // =============================================
       setLoggedIn(true);
 
       setPassword("");
 
       setError("");
 
-      // ===============================================
+      // =============================================
       // LOAD PRODUCTS
-      // ===============================================
+      // =============================================
       await loadProducts();
 
     } catch (err) {
@@ -244,22 +285,20 @@ function App() {
         "Login failed. Please check your username and password.";
 
       if (err.response) {
-        try {
-          const serverData = cleanResponse(
+        const serverData =
+          cleanResponse(
             err.response.data
           );
 
-          message =
-            serverData?.error ||
-            serverData?.message ||
-            message;
+        message =
+          serverData?.error ||
+          serverData?.message ||
+          message;
 
-        } catch {
-          message = err.message || message;
-        }
       } else {
         message =
-          err.message || message;
+          err.message ||
+          message;
       }
 
       setError(message);
@@ -316,23 +355,30 @@ function App() {
 
     try {
       const productData = {
-        product_name: productName.trim(),
-        description: description.trim(),
+        product_name:
+          productName.trim(),
+
+        description:
+          description.trim(),
+
         price: Number(price),
+
         quantity: Number(quantity),
       };
 
-      // ===============================================
+      // =============================================
       // UPDATE
-      // ===============================================
+      // =============================================
       if (editingId) {
-        const response = await axios.put(
-          `${API_URL}/products/${editingId}`,
-          productData,
-          {
-            headers: getHeaders(),
-          }
-        );
+        const response =
+          await axios.put(
+            `${API_URL}/products/${editingId}`,
+            productData,
+            {
+              headers:
+                getHeaders(),
+            }
+          );
 
         console.log(
           "UPDATE RESPONSE:",
@@ -340,17 +386,19 @@ function App() {
         );
       }
 
-      // ===============================================
+      // =============================================
       // CREATE
-      // ===============================================
+      // =============================================
       else {
-        const response = await axios.post(
-          `${API_URL}/products`,
-          productData,
-          {
-            headers: getHeaders(),
-          }
-        );
+        const response =
+          await axios.post(
+            `${API_URL}/products`,
+            productData,
+            {
+              headers:
+                getHeaders(),
+            }
+          );
 
         console.log(
           "CREATE RESPONSE:",
@@ -368,14 +416,22 @@ function App() {
         err
       );
 
-      if (err.response?.status === 401) {
+      if (
+        err.response?.status ===
+        401
+      ) {
         logout();
         return;
       }
 
+      const serverData =
+        cleanResponse(
+          err.response?.data
+        );
+
       setError(
-        err.response?.data?.error ||
-        err.response?.data?.message ||
+        serverData?.error ||
+        serverData?.message ||
         err.message ||
         "Failed to save product."
       );
@@ -414,9 +470,10 @@ function App() {
   // DELETE PRODUCT
   // ===================================================
   const deleteProduct = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this product?"
-    );
+    const confirmed =
+      window.confirm(
+        "Are you sure you want to delete this product?"
+      );
 
     if (!confirmed) {
       return;
@@ -425,12 +482,14 @@ function App() {
     try {
       setError("");
 
-      const response = await axios.delete(
-        `${API_URL}/products/${id}`,
-        {
-          headers: getHeaders(),
-        }
-      );
+      const response =
+        await axios.delete(
+          `${API_URL}/products/${id}`,
+          {
+            headers:
+              getHeaders(),
+          }
+        );
 
       console.log(
         "DELETE RESPONSE:",
@@ -445,14 +504,22 @@ function App() {
         err
       );
 
-      if (err.response?.status === 401) {
+      if (
+        err.response?.status ===
+        401
+      ) {
         logout();
         return;
       }
 
+      const serverData =
+        cleanResponse(
+          err.response?.data
+        );
+
       setError(
-        err.response?.data?.error ||
-        err.response?.data?.message ||
+        serverData?.error ||
+        serverData?.message ||
         err.message ||
         "Failed to delete product."
       );
@@ -539,9 +606,7 @@ function App() {
   return (
     <div className="app">
 
-      {/* ==============================================
-          HEADER
-      =============================================== */}
+      {/* HEADER */}
 
       <header className="header">
 
@@ -579,13 +644,9 @@ function App() {
 
       </header>
 
-      {/* ==============================================
-          MAIN
-      =============================================== */}
+      {/* MAIN */}
 
       <main className="container">
-
-        {/* ERROR MESSAGE */}
 
         {error && (
           <div className="error">
@@ -594,331 +655,498 @@ function App() {
         )}
 
         <section className="page-title">
+
           <div>
-            <p className="eyebrow">THE COLLECTION <span>/</span> 01</p>
-            <h2>Inventory<span className="brand-period">.</span></h2>
-            <p>A living record of everything in the studio.</p>
+
+            <p className="eyebrow">
+              THE COLLECTION{" "}
+              <span>/</span> 01
+            </p>
+
+            <h2>
+              Inventory
+              <span className="brand-period">
+                .
+              </span>
+            </h2>
+
+            <p>
+              A living record of
+              everything in the studio.
+            </p>
+
           </div>
-          <div className="inventory-stamp"><span>LL</span><small>CURATED<br />WITH INTENT</small></div>
+
+          <div className="inventory-stamp">
+
+            <span>
+              LL
+            </span>
+
+            <small>
+              CURATED
+              <br />
+              WITH INTENT
+            </small>
+
+          </div>
+
         </section>
 
-        <section className="stats-row" aria-label="Inventory summary">
+        <section
+          className="stats-row"
+          aria-label="Inventory summary"
+        >
+
           <article className="stat-block stat-highlight">
-            <span className="stat-label">IN THE COLLECTION</span>
-            <strong>{products.length.toString().padStart(2, "0")}</strong>
-            <span className="stat-foot">unique pieces</span>
-          </article>
-          <article className="stat-block">
-            <span className="stat-label">TOTAL UNITS</span>
-            <strong>{totalUnits.toLocaleString("en-PH")}</strong>
-            <span className="stat-foot">across all products</span>
-          </article>
-          <article className="stat-block">
-            <span className="stat-label">SHELF VALUE</span>
-            <strong>₱{stockValue.toLocaleString("en-PH", { maximumFractionDigits: 0 })}</strong>
-            <span className="stat-foot">based on current stock</span>
-          </article>
-          <div className="stat-aside"><span className="status-dot" /> LIVE INVENTORY<br /><small>JUST AS IT IS</small></div>
-        </section>
 
-        {/* ============================================
-            PRODUCT FORM
-        ============================================= */}
+            <span className="stat-label">
+              IN THE COLLECTION
+            </span>
+
+            <strong>
+              {products.length
+                .toString()
+                .padStart(2, "0")}
+            </strong>
+
+            <span className="stat-foot">
+              unique pieces
+            </span>
+
+          </article>
+
+          <article className="stat-block">
+
+            <span className="stat-label">
+              TOTAL UNITS
+            </span>
+
+            <strong>
+              {totalUnits.toLocaleString(
+                "en-PH"
+              )}
+            </strong>
+
+            <span className="stat-foot">
+              across all products
+            </span>
+
+          </article>
+
+          <article className="stat-block">
+
+            <span className="stat-label">
+              SHELF VALUE
+            </span>
+
+            <strong>
+              ₱
+              {stockValue.toLocaleString(
+                "en-PH",
+                {
+                  maximumFractionDigits: 0,
+                }
+              )}
+            </strong>
+
+            <span className="stat-foot">
+              based on current stock
+            </span>
+
+          </article>
+
+          <div className="stat-aside">
+
+            <span className="status-dot" />
+
+            LIVE INVENTORY
+
+            <br />
+
+            <small>
+              JUST AS IT IS
+            </small>
+
+          </div>
+
+        </section>
 
         <div className="workspace-grid">
 
-        <section className="form-card">
+          {/* PRODUCT FORM */}
 
-          <div className="section-heading">
-            <span className="section-number">A / 01</span>
-            <h2>{editingId ? "Edit piece" : "Add a piece"}</h2>
-            <p>{editingId ? "Refine the details below." : "Make room for something new."}</p>
-          </div>
+          <section className="form-card">
 
-          <form onSubmit={saveProduct}>
+            <div className="section-heading">
 
-            <div className="form-grid">
+              <span className="section-number">
+                A / 01
+              </span>
 
-              {/* PRODUCT NAME */}
-
-              <div>
-
-                <label>Product name</label>
-
-                <input
-                  type="text"
-                  value={productName}
-                  onChange={(e) =>
-                    setProductName(
-                      e.target.value
-                    )
-                  }
-                  placeholder="Product name"
-                  required
-                />
-
-              </div>
-
-              {/* DESCRIPTION */}
-
-              <div>
-
-                <label>Description <span className="optional">OPTIONAL</span></label>
-
-                <input
-                  type="text"
-                  value={description}
-                  onChange={(e) =>
-                    setDescription(
-                      e.target.value
-                    )
-                  }
-                  placeholder="Description"
-                />
-
-              </div>
-
-              {/* PRICE */}
-
-              <div>
-
-                <label>Price <span className="currency-label">PHP ₱</span></label>
-
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  value={price}
-                  onChange={(e) =>
-                    setPrice(
-                      e.target.value
-                    )
-                  }
-                  placeholder="0.00"
-                  required
-                />
-
-              </div>
-
-              {/* QUANTITY */}
-
-              <div>
-
-                <label>Quantity</label>
-
-                <input
-                  type="number"
-                  min="0"
-                  value={quantity}
-                  onChange={(e) =>
-                    setQuantity(
-                      e.target.value
-                    )
-                  }
-                  placeholder="0"
-                  required
-                />
-
-              </div>
-
-            </div>
-
-            {/* FORM BUTTONS */}
-
-            <div className="form-buttons">
-
-              <button className="primary-button" type="submit">
+              <h2>
                 {editingId
-                  ? "Save changes"
-                  : "Add to collection"}
-                <span aria-hidden="true">↗</span>
-              </button>
-
-              {editingId && (
-                <button
-                  type="button"
-                  className="secondary-button"
-                  onClick={resetForm}
-                >
-                  Discard
-                </button>
-              )}
-
-            </div>
-
-          </form>
-
-        </section>
-
-        {/* ============================================
-            PRODUCTS TABLE
-        ============================================= */}
-
-        <section className="products-card">
-
-          <div className="products-title">
-
-            <div>
-
-              <span className="section-number">B / 02</span>
-              <h2>All pieces</h2>
+                  ? "Edit piece"
+                  : "Add a piece"}
+              </h2>
 
               <p>
-                {products.length} {products.length === 1 ? "piece" : "pieces"} in the collection
+                {editingId
+                  ? "Refine the details below."
+                  : "Make room for something new."}
               </p>
 
             </div>
 
-            <button
-              className="refresh-button"
-              onClick={loadProducts}
+            <form
+              onSubmit={saveProduct}
             >
-              <span aria-hidden="true">↻</span> Refresh
-            </button>
 
-          </div>
+              <div className="form-grid">
 
-          {/* NO PRODUCTS */}
+                <div>
 
-          {products.length === 0 ? (
+                  <label>
+                    Product name
+                  </label>
 
-            <div className="empty">
-              <strong>A little space to begin.</strong>
-              <span>Your next favorite starts here.</span>
+                  <input
+                    type="text"
+                    value={
+                      productName
+                    }
+                    onChange={(e) =>
+                      setProductName(
+                        e.target.value
+                      )
+                    }
+                    placeholder="Product name"
+                    required
+                  />
+
+                </div>
+
+                <div>
+
+                  <label>
+                    Description{" "}
+                    <span className="optional">
+                      OPTIONAL
+                    </span>
+                  </label>
+
+                  <input
+                    type="text"
+                    value={
+                      description
+                    }
+                    onChange={(e) =>
+                      setDescription(
+                        e.target.value
+                      )
+                    }
+                    placeholder="Description"
+                  />
+
+                </div>
+
+                <div>
+
+                  <label>
+                    Price{" "}
+                    <span className="currency-label">
+                      PHP ₱
+                    </span>
+                  </label>
+
+                  <input
+                    type="number"
+                    step="0.01"
+                    min="0"
+                    value={price}
+                    onChange={(e) =>
+                      setPrice(
+                        e.target.value
+                      )
+                    }
+                    placeholder="0.00"
+                    required
+                  />
+
+                </div>
+
+                <div>
+
+                  <label>
+                    Quantity
+                  </label>
+
+                  <input
+                    type="number"
+                    min="0"
+                    value={quantity}
+                    onChange={(e) =>
+                      setQuantity(
+                        e.target.value
+                      )
+                    }
+                    placeholder="0"
+                    required
+                  />
+
+                </div>
+
+              </div>
+
+              <div className="form-buttons">
+
+                <button
+                  className="primary-button"
+                  type="submit"
+                >
+                  {editingId
+                    ? "Save changes"
+                    : "Add to collection"}
+
+                  <span aria-hidden="true">
+                    ↗
+                  </span>
+
+                </button>
+
+                {editingId && (
+                  <button
+                    type="button"
+                    className="secondary-button"
+                    onClick={resetForm}
+                  >
+                    Discard
+                  </button>
+                )}
+
+              </div>
+
+            </form>
+
+          </section>
+
+          {/* PRODUCTS */}
+
+          <section className="products-card">
+
+            <div className="products-title">
+
+              <div>
+
+                <span className="section-number">
+                  B / 02
+                </span>
+
+                <h2>
+                  All pieces
+                </h2>
+
+                <p>
+                  {products.length}{" "}
+                  {products.length === 1
+                    ? "piece"
+                    : "pieces"}{" "}
+                  in the collection
+                </p>
+
+              </div>
+
+              <button
+                className="refresh-button"
+                onClick={
+                  loadProducts
+                }
+              >
+                <span aria-hidden="true">
+                  ↻
+                </span>{" "}
+                Refresh
+              </button>
+
             </div>
 
-          ) : (
+            {products.length === 0 ? (
 
-            <div className="table-wrapper">
+              <div className="empty">
 
-              <table>
+                <strong>
+                  A little space to begin.
+                </strong>
 
-                <thead>
+                <span>
+                  Your next favorite
+                  starts here.
+                </span>
 
-                  <tr>
+              </div>
 
-                    <th>
-                      ID
-                    </th>
+            ) : (
 
-                    <th>
-                      Product Name
-                    </th>
+              <div className="table-wrapper">
 
-                    <th>
-                      Description
-                    </th>
+                <table>
 
-                    <th>
-                      Price
-                    </th>
+                  <thead>
 
-                    <th>
-                      Quantity
-                    </th>
+                    <tr>
 
-                    <th>
-                      Created At
-                    </th>
+                      <th>
+                        ID
+                      </th>
 
-                    <th>
-                      Actions
-                    </th>
+                      <th>
+                        Product Name
+                      </th>
 
-                  </tr>
+                      <th>
+                        Description
+                      </th>
 
-                </thead>
+                      <th>
+                        Price
+                      </th>
 
-                <tbody>
+                      <th>
+                        Quantity
+                      </th>
 
-                  {products.map(
-                    (product) => (
+                      <th>
+                        Created At
+                      </th>
 
-                      <tr
-                        key={product.id}
-                      >
+                      <th>
+                        Actions
+                      </th>
 
-                        <td className="id-cell">
-                          LL–{String(product.id).padStart(3, "0")}
-                        </td>
+                    </tr>
 
-                        <td>
-                          <span className="product-name-cell">{product.product_name}</span>
-                        </td>
+                  </thead>
 
-                        <td>
-                          {
-                            product.description
+                  <tbody>
+
+                    {products.map(
+                      (product) => (
+
+                        <tr
+                          key={
+                            product.id
                           }
-                        </td>
+                        >
 
-                        <td>
-                          ₱
-                          {Number(
-                            product.price
-                          ).toLocaleString(
-                            "en-PH",
+                          <td className="id-cell">
+                            LL–
+                            {String(
+                              product.id
+                            ).padStart(
+                              3,
+                              "0"
+                            )}
+                          </td>
+
+                          <td>
+                            <span className="product-name-cell">
+                              {
+                                product.product_name
+                              }
+                            </span>
+                          </td>
+
+                          <td>
                             {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
+                              product.description
                             }
-                          )}
-                        </td>
+                          </td>
 
-                        <td>
-                          <span className={`quantity-pill ${Number(product.quantity) <= 5 ? "quantity-low" : ""}`}>
-                            {product.quantity} <small>units</small>
-                          </span>
-                        </td>
-
-                        <td>
-                          {product.created_at}
-                        </td>
-
-                        <td>
-
-                          <div className="actions">
-
-                            <button
-                              className="edit-button"
-                              onClick={() =>
-                                editProduct(
-                                  product
-                                )
+                          <td>
+                            ₱
+                            {Number(
+                              product.price
+                            ).toLocaleString(
+                              "en-PH",
+                              {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
                               }
+                            )}
+                          </td>
+
+                          <td>
+
+                            <span
+                              className={`quantity-pill ${
+                                Number(
+                                  product.quantity
+                                ) <= 5
+                                  ? "quantity-low"
+                                  : ""
+                              }`}
                             >
-                              Edit
-                            </button>
+                              {
+                                product.quantity
+                              }{" "}
+                              <small>
+                                units
+                              </small>
+                            </span>
 
-                            <button
-                              className="delete-button"
-                              onClick={() =>
-                                deleteProduct(
-                                  product.id
-                                )
-                              }
-                            >
-                              Remove
-                            </button>
+                          </td>
 
-                          </div>
+                          <td>
+                            {
+                              product.created_at
+                            }
+                          </td>
 
-                        </td>
+                          <td>
 
-                      </tr>
+                            <div className="actions">
 
-                    )
-                  )}
+                              <button
+                                className="edit-button"
+                                onClick={() =>
+                                  editProduct(
+                                    product
+                                  )
+                                }
+                              >
+                                Edit
+                              </button>
 
-                </tbody>
+                              <button
+                                className="delete-button"
+                                onClick={() =>
+                                  deleteProduct(
+                                    product.id
+                                  )
+                                }
+                              >
+                                Remove
+                              </button>
 
-              </table>
+                            </div>
 
-            </div>
+                          </td>
 
-          )}
+                        </tr>
 
-        </section>
+                      )
+                    )}
+
+                  </tbody>
+
+                </table>
+
+              </div>
+
+            )}
+
+          </section>
+
         </div>
 
       </main>
